@@ -20,13 +20,13 @@ export type Changeset = [
 // TODO: other retry mechanisms
 // todo: need to know who received from. cs site id can be a forwarded site id
 export const changesReceived = async (
-  fromSiteId: SiteIDWire,
+  db: DB | DBAsync,
   changesets: readonly Changeset[]
 ) => {
-  await this.db.transaction(async () => {
+  await db.transaction(async () => {
     let maxVersion = 0n;
-    log("inserting changesets in tx", changesets);
-    const stmt = await this.db.prepare(
+    // console.log("inserting changesets in tx", changesets);
+    const stmt = await db.prepare(
       'INSERT INTO crsql_changes ("table", "pk", "cid", "val", "version", "site_id") VALUES (?, ?, ?, ?, ?, ?)'
     );
     // TODO: may want to chunk
@@ -35,6 +35,7 @@ export const changesReceived = async (
       // we have for this peer?
       // that'd preclude resetting tho.
       for (const cs of changesets) {
+        console.log("changeset", [cs[2], cs[3]])
         const v = BigInt(cs[4]);
         maxVersion = v > maxVersion ? v : maxVersion;
         // cannot use same statement in parallel
@@ -44,7 +45,7 @@ export const changesReceived = async (
           cs[2],
           cs[3],
           v,
-          cs[5] ? uuidParse(cs[5]) : 0
+          cs[5] // ? uuidParse(cs[5]) : 0
         );
       }
     } catch (e) {
@@ -53,9 +54,5 @@ export const changesReceived = async (
     } finally {
       stmt.finalize();
     }
-    await this.db.exec(
-      `INSERT OR REPLACE INTO __crsql_wdbreplicator_peers (site_id, version) VALUES (?, ?)`,
-      [uuidParse(fromSiteId), maxVersion]
-    );
   });
 };

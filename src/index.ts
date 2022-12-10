@@ -1,5 +1,5 @@
 import aio from "@vlcn.io/crsqlite-allinone"
-import { Changeset } from "./applyChanges.js"
+import { Changeset, changesReceived } from "./applyChanges.js"
 
 export const initSql = [
   `CREATE TABLE IF NOT EXISTS myTable (
@@ -42,8 +42,9 @@ const dbTarget = aio.open()
 dbTarget.execMany(initSql)
 
 try {
-  await applyChanges(dbTarget, changes)
+  await changesReceived(dbTarget, changes)
 } finally {
+  console.log("closing db")
   dbTarget.close()
 }
 
