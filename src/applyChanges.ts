@@ -23,7 +23,7 @@ export const changesReceived = async (
   db: DB | DBAsync,
   changesets: readonly Changeset[]
 ) => {
-  await db.transaction(async () => {
+  // await db.transaction(async () => { // uncomment to make fail
     let maxVersion = 0n;
     // console.log("inserting changesets in tx", changesets);
     const stmt = await db.prepare(
@@ -54,5 +54,5 @@ export const changesReceived = async (
     } finally {
       stmt.finalize();
     }
-  });
+  // }); // uncomment to make fail
 };
