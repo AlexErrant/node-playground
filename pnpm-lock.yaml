@@ -2,18 +2,22 @@ lockfileVersion: 5.4
 
 specifiers:
   '@types/node': ^18.11.13
+  '@types/uuid': ^9.0.0
   '@vlcn.io/crsqlite-allinone': ^0.4.1
   '@vlcn.io/xplat-api': ^0.4.1
   nodemon: ^2.0.20
   ts-node: ^10.9.1
   typescript: ^4.9.4
+  uuid: ^9.0.0
 
 dependencies:
   '@vlcn.io/crsqlite-allinone': 0.4.1
   '@vlcn.io/xplat-api': 0.4.1
+  uuid: 9.0.0
 
 devDependencies:
   '@types/node': 18.11.13
+  '@types/uuid': 9.0.0
   nodemon: 2.0.20
   ts-node: 10.9.1_73migmg77y47omm5253gettkxi
   typescript: 4.9.4
@@ -61,6 +65,10 @@ packages:
 
   /@types/node/18.11.13:
     resolution: {integrity: sha512-IASpMGVcWpUsx5xBOrxMj7Bl8lqfuTY7FKAnPmu5cHkfQVWF8GulWS1jbRqA934qZL35xh5xN/+Xe/i26Bod4w==}
+    dev: true
+
+  /@types/uuid/9.0.0:
+    resolution: {integrity: sha512-kr90f+ERiQtKWMz5rP32ltJ/BtULDI5RVO0uavn1HQUOwjx0R1h0rnDYNL0CepF1zL5bSY6FISAfd9tOdDhU5Q==}
     dev: true
 
   /@vlcn.io/crsqlite-allinone/0.4.1:
@@ -618,6 +626,11 @@ packages:
 
   /util-deprecate/1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
+    dev: false
+
+  /uuid/9.0.0:
+    resolution: {integrity: sha512-MXcSTerfPa4uqyzStbRoTgt5XIe3x5+42+q1sDuy3R5MDk66URdLMOZe5aPX/SQd+kuYAh0FdP/pO28IkQyTeg==}
+    hasBin: true
     dev: false
 
   /v8-compile-cache-lib/3.0.1:
