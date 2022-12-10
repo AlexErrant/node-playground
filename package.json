@@ -2,10 +2,10 @@
   "name": "playground",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "type": "module",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "dev": "nodemon ./src/index.ts"
   },
   "keywords": [],
   "author": "",
