@@ -42,7 +42,7 @@ const dbTarget = aio.open()
 dbTarget.execMany(initSql)
 
 try {
-  await changesReceived(dbTarget, changes)
+  await changesReceived(changes)
 } finally {
   console.log("closing db")
   dbTarget.close()

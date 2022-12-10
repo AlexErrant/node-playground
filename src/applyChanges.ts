@@ -20,15 +20,11 @@ export type Changeset = [
 // TODO: other retry mechanisms
 // todo: need to know who received from. cs site id can be a forwarded site id
 export const changesReceived = async (
-  db: DB | DBAsync,
   changesets: readonly Changeset[]
 ) => {
-  // await db.transaction(async () => { // uncomment to make fail
+  await transaction(async () => { // uncomment to make fail
     let maxVersion = 0n;
     // console.log("inserting changesets in tx", changesets);
-    const stmt = await db.prepare(
-      'INSERT INTO crsql_changes ("table", "pk", "cid", "val", "version", "site_id") VALUES (?, ?, ?, ?, ?, ?)'
-    );
     // TODO: may want to chunk
     try {
       // TODO: should we discard the changes altogether if they're less than the tracking version
@@ -39,20 +35,44 @@ export const changesReceived = async (
         const v = BigInt(cs[4]);
         maxVersion = v > maxVersion ? v : maxVersion;
         // cannot use same statement in parallel
-        await stmt.run(
-          cs[0],
-          cs[1],
-          cs[2],
-          cs[3],
-          v,
-          cs[5] // ? uuidParse(cs[5]) : 0
-        );
+        await exec(JSON.stringify([cs[2], cs[3]]))
       }
     } catch (e) {
       console.error(e);
       throw e;
     } finally {
-      stmt.finalize();
     }
-  // }); // uncomment to make fail
+  }); // uncomment to make fail
 };
+
+async function exec(input: string): Promise<void> {
+  await new Promise(resolve => setTimeout(resolve, 1000))
+  console.log("exec", input)
+}
+
+function transaction(cb: () => Promise<void>): Promise<void> {
+  return serializeTx(async () => {
+    await exec("BEGIN");
+    try {
+      await cb();
+    } catch (e) {
+      await exec("ROLLBACK");
+      return;
+    }
+    await exec("COMMIT");
+  });
+}
+
+function serializeTx(cb: () => any) {
+  const res = txQueue.then(
+    () => cb(),
+    (e) => {
+      console.error(e);
+    }
+  );
+  txQueue = res;
+
+  return res;
+}
+
+let txQueue: Promise<any> = Promise.resolve();
