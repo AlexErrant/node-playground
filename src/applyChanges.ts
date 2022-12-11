@@ -20,10 +20,10 @@ export type Changeset = [
 // TODO: other retry mechanisms
 // todo: need to know who received from. cs site id can be a forwarded site id
 export const changesReceived = async (
-  db: DB | DBAsync,
+  db: DB,
   changesets: readonly Changeset[]
 ) => {
-  // await db.transaction(async () => { // uncomment to make fail
+  await db.transaction(async () => { // uncomment to make fail
     let maxVersion = 0n;
     // console.log("inserting changesets in tx", changesets);
     const stmt = await db.prepare(
@@ -39,7 +39,7 @@ export const changesReceived = async (
         const v = BigInt(cs[4]);
         maxVersion = v > maxVersion ? v : maxVersion;
         // cannot use same statement in parallel
-        await stmt.run(
+        stmt.run(
           cs[0],
           cs[1],
           cs[2],
@@ -54,5 +54,5 @@ export const changesReceived = async (
     } finally {
       stmt.finalize();
     }
-  // }); // uncomment to make fail
+  }); // uncomment to make fail
 };
